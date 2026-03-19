@@ -11,7 +11,7 @@ tags: [Bypass UAC]
 
 Windows调试机制有一个DebugObject对象，当用如下代码以调试模式创建一个notepad进程时，此时notepad就有这个DebugObject。
 
-```C
+```
 #include <Windows.h>
 #include <stdio.h>
 
@@ -54,7 +54,7 @@ int main()
 
 在windbg中使用下面的命令查看句柄表，关注GrantedAddress为001fffff，表示`PROCESS_ALL_ACCESS`，然后跟踪来源。
 
-```C
+```
 !handle 0 0 <cid>
 ```
 
@@ -97,7 +97,7 @@ HANDLE 00fc即为debugee进程的`PROCESS_ALL_ACCESS`权限的句柄。
 
 在此图启动权限提升进程需要调用RAiLaunchAdminProcess API，这个API逆向过UAC的都知道，它就是Appinfo中的RPC函数。其中StartFlags表示可以控制新进程的权限，设置为1时会尝试提升进程权限，设置为0时则不会，CreateFlags和CreateProcess中的一致。用这个的好处就是创建提权白名单进程可以直接设置StartFlags为1，这样就不会引发类似于CreateProcess创建提权白名单的740 Error。
 
-```C
+```
 long RAiLaunchAdminProcess(
    handle_t hBinding,
    [in][unique][string] wchar_t* ExecutablePath,
@@ -122,7 +122,7 @@ long RAiLaunchAdminProcess(
 
 根据网上公开的定义写一个IDL文件即可，更简单的方法是直接UACME中获取编译后的头文件和客户端文件。
 
-```idl
+```
 [
 uuid(201ef99a-7fa0-444c-9399-19ba84f12a1a),
 version(1.0),
@@ -169,13 +169,12 @@ interface LaunchAdminProcess
 		[in]long Timeout,
 		[out]struct _APP_PROCESS_INFORMATION* ProcessInformation,
 		[out]long* ElevationType);
-
 }
 ```
 
 最后还需要一个acf文件决定async，如下：
 
-```acf
+```
 interface LaunchAdminProcess
 {	
 	[async] RAiLaunchAdminProcess();
