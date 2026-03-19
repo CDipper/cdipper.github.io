@@ -1,6 +1,6 @@
 ---
 title: 利用IHxHelpPaneServer接口断链执行
-date: 2026-03-19 11:30:00 +0800
+date: 2026-03-18 14:30:00 +0800
 categories: [MalwareTech, COM接口]
 tags: [COM接口]
 ---
