@@ -124,7 +124,7 @@ comments:
     repo_id: R_kgDORqN5fQ
     category: Comments
     category_id: DIC_kwDORqN5fc4C413u
-    mapping: pathname# optional, default to 'pathname'
+    mapping: pathname # optional, default to 'pathname'
     strict: 0 # optional, default to '0'
     input_position: bottom # optional, default to 'bottom'
     lang: zh-CN # optional, default to the value of `site.lang`
