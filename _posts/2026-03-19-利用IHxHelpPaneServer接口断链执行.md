@@ -35,7 +35,7 @@ tags: [COM接口]
 
 在C++中可以直接这么定义：
 
-```C++
+```
 struct __declspec()
 IHxHelpPaneServer : public IUnknown
 {
@@ -60,7 +60,7 @@ IHxHelpPaneServer : public IUnknown
 
 这个结构实际上是虚函数表的定义。在C++中，当一个类继承另一个类时，被继承的类的虚函数通常会位于派生类的虚表（vtable）的最上面。所以我们的结构不用动，这三个虚函数就按顺序排列就行，最后接着往下定义IHxHelpPaneServer的自定义方法：
 
-```C++
+```
 // 模拟虚函数内存布局
 typedef struct __declspec() IHxHelpPaneServer {
 	BEGIN_INTERFACE
@@ -91,7 +91,7 @@ typedef struct __declspec() IHxHelpPaneServer {
 
 因为定义的是虚表结构，为了拿到指针的指针还需要在定义一个结构指向虚函数表指针：
 
-```C++
+```
 // 定义指向虚函数表的指针
 typedef struct IHxHelpPaneServer {
 	CONST_VTBL struct IHxHelpPaneServerVtbl* lpVtbl;
@@ -100,13 +100,13 @@ typedef struct IHxHelpPaneServer {
 
 最后的最后，在C++中，虚函数的调用通常需要通过类实例对象的指针或引用来进行，调用我们需要的目标方法是，需要传入类实例对象。
 
-```C++
+```
 HRESULT (__stdcall* Execute)(IHxHelpPaneServer* This, LPWSTR pcUrl);
 ```
 
 main函数代码如下：
 
-```c++
+```
 int main()
 {
 	if (CoInitializeEx(NULL, COINIT_MULTITHREADED) != S_OK) {
@@ -152,7 +152,7 @@ int main()
 
 但最好的方法是通过GetModuleFileName来定位自己。
 
-```C++
+```
 fopen_s(&Stream, ".\\file.log.enc", "rb")
 ```
 
