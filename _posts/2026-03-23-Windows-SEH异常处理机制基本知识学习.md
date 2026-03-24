@@ -5,8 +5,6 @@ categories: [Windows机制, SEH]
 tags: [SEH]
 ---
 
-# Windows SEH异常处理机制基本知识学习
-
 SEH (Structured Exception Handling, 结构化异常处理）是 Windows 操作系统用千自身除错的一种机制。SEH是一种错误保护和修复机制，它告诉系统当程序运行出现异常或错误时由谁来处理，给了应用程序一个改正错误的机会。从程序设计的角度来说，就是系统在终结程序之前给程序提供的一个执行其预先设定的回调函数的机会。
 
 tips：以下讨论的点仅针对x86，在x64上的异常处理机制很不一样，了解堆栈欺骗技术的话，知道`.pdata`中`UNWIND_INFO`，handler就是编译时写入的，而不是运行时注册的。
