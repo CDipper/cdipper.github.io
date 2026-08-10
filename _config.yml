@@ -1,0 +1,46 @@
+# Hexo 站点配置 —— 由 Jekyll(chirpy) 迁移而来
+title: CDipp3rのBlog
+subtitle: Now think about it. It's still a kindergarten.
+description: A minimal, responsive and feature-rich blog for technical writing.
+author: cdipper
+language: zh-CN
+timezone: Asia/Shanghai
+
+# URL（User Pages 根域名，root 必须是 /）
+url: https://cdipper.github.io
+root: /
+# 尽量对齐 chirpy 的旧链接 /posts/<标题>/
+permalink: posts/:title/
+
+source_dir: source
+public_dir: public
+tag_dir: tags
+archive_dir: archives
+category_dir: categories
+code_dir: downloads/code
+
+new_post_name: :title.md
+default_layout: post
+titlecase: false
+external_link:
+  enable: true
+  field: site
+  exclude: ''
+filename_case: 0
+post_asset_folder: false
+relative_link: false
+future: true
+
+# 代码高亮由 Hexo 负责生成，cactus 主题负责上色（见主题 _config.yml 的 highlight）
+highlight:
+  enable: true
+  line_number: false
+  auto_detect: true
+  tab_replace: ''
+  wrap: true
+  hljs: false
+
+theme: cactus
+
+# 部署走 GitHub Actions（.github/workflows/pages-deploy.yml），
+# 不再用 hexo-deployer-git 覆盖源码分支。
