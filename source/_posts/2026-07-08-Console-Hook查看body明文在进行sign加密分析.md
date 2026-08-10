@@ -17,7 +17,7 @@ tags: [javascript逆向]
 
 如下是针对我测试站点的hook脚本：
 
-```
+```js
 (function(){
   var oEnc = JSEncrypt.prototype.encryptLong;
   JSEncrypt.prototype.encryptLong = function(str){

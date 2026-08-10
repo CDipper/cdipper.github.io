@@ -13,7 +13,7 @@ tips：以下讨论的点仅针对x86，在x64上的异常处理机制很不一�
 
 TIB (Thread Information Block, 线程信息块）是保存线程基本信息的数据结构。在用户模式下， 它位于TEB的头部，而 TEB 是操作系统为了保存每个线程的私有数据创建的，每个线程都有自己的TEB。TIB结构如下：
 
-```
+```c
 //0x1c bytes (sizeof)
 struct _NT_TIB
 {
@@ -33,7 +33,7 @@ struct _NT_TIB
 
 第一个字段其实是指向`_EXCEPTION_REGISTRATION_RECORD`的指针，显然也位于TEB偏移0处，结构如下：
 
-```
+```c
 //0x8 bytes (sizeof)
 struct _EXCEPTION_REGISTRATION_RECORD
 {
@@ -52,7 +52,7 @@ struct _EXCEPTION_REGISTRATION_RECORD
 
 封装的内容主要有两部分。 一部分是异常记录， 包含本次异常的信息，该结构定义如下：
 
-```
+```c
 //0x50 bytes (sizeof)
 struct _EXCEPTION_RECORD
 {
@@ -71,7 +71,7 @@ ExceptionCode为异常产生的原因，对应参考 [EXCEPTION_RECORD (winnt.h)
 
 另一部分被封装的内容称为陷阱帧（`_KTRAP_FRAME`），它精确描述了发生异常时线程的状态 (Windows的任务调度是基千线程的）。该结构与处理器高度相关，因此在不同的平台上 (Intel x86/x64、 MIPS、 Alpha和PowerPC处理器等）有不同的定义。在x64下有如下定义：
 
-```
+```c
 //0x8c bytes (sizeof)
 struct _KTRAP_FRAME
 {
@@ -124,7 +124,7 @@ struct _KTRAP_FRAME
 
 上述结构中包含每个寄存器的状态，但该结构一般仅供系统内核自身或者调试系统使用。当需要把控制权交给用户注册的异常处理程序时，会将上述结构，换成一个名为`CONTEXT`的结构，定义如下：
 
-```
+```c
 //0x2cc bytes (sizeof)
 struct _CONTEXT
 {
@@ -162,7 +162,7 @@ struct _CONTEXT
 
 封装完毕后，异常处理函数会进一步调用系统内核的`nt!KiDispatchException`函数来处理异常，该函数定义如下（参考ReactOS）：
 
-```
+```c
 VOID NTAPI KiDispatchException (
 IN PEXCEPTION_RECORD ExceptionRecord,         // 异常记录
 IN PKEXCEPTION_FRAME ExceptionFrame,          //  对 NT386 系统总是为 NULL 未使用           
@@ -176,7 +176,7 @@ IN BOOLEAN FirstChance                        // 是否第一次处理该异常
 
 当一个异常发生时处理顺序首位通常时调试器，当不存在调试器时首位便是SEH。由于应用层和内核层使用的是两个不同的栈，所以为了让用户态的异常处理程序能够处理访问异常相关的结构，所以内核会将这次异常相关联的ExceptionRecord和CONTEXT放到用户态栈中，同时在栈放置一个`_EXCEPTION_POINTERS`结构，它包含两个结构，一个是指向`_EXCEPTION_RECORD`的指针，另一个则是指向CONTEXT的指针。这样能确保用户态的异常处理程序就能够取得异常的具体信息和发生异常时线程的状态信息，并根据具体情况进行处理了。
 
-```
+```c
 //0x10 bytes (sizeof)
 struct _EXCEPTION_POINTERS
 {
@@ -191,7 +191,7 @@ struct _EXCEPTION_POINTERS
 
 在安装SEH处理程序之前，需要准备一个符合SEH标准的回调函数，然后使用如下代码进行SEH异常处理程序的安装。
 
-```
+```c
 push offset SEHandler  
 push fs:[0]
 mov fs:[0],esp
@@ -199,7 +199,7 @@ mov fs:[0],esp
 
 x86的话首先向栈里面压了两个参数，即`_EXCEPTION_REGISTRATION_RECORD`的第一个和第二个参数，此时esp刚好指向这个结构开头，所以后面mov直接放到链表头。这就是最简单的安装过程（直观的感受），用C代码则是如下：
 
-```
+```c
 __try
 {
     crash();
@@ -220,7 +220,7 @@ __except(EXCEPTION_EXECUTE_HANDLER)
 
 卸载也很简单了，从链表头部删除一个节点即可，如下：
 
-```
+```c
 mov esp,dword ptr fs:[O] 
 pop dword ptr fs:[O] 
 ```
@@ -231,7 +231,7 @@ pop dword ptr fs:[O]
 
 调试如下代码：
 
-```
+```c
 #include <windows.h>
 #include <stdio.h>
 
