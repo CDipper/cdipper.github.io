@@ -1,5 +1,6 @@
 ---
 title: About
+layout: page
 ---
 
 > email: 1964682640@qq.com

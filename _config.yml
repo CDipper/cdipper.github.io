@@ -1,7 +1,7 @@
 # Hexo 站点配置 —— 由 Jekyll(chirpy) 迁移而来
 title: CDipp3rのBlog
 subtitle: Now think about it. It's still a kindergarten.
-description: A minimal, responsive and feature-rich blog for technical writing.
+description: No think about it. It's still a kindergarten.
 author: cdipper
 language: zh-CN
 timezone: Asia/Shanghai
@@ -32,10 +32,11 @@ relative_link: false
 future: true
 
 # 代码高亮由 Hexo 负责生成，cactus 主题负责上色（见主题 _config.yml 的 highlight）
+# auto_detect 已关闭：代码块需自行标注语言（如 ```bash）才能高亮
 highlight:
   enable: true
   line_number: false
-  auto_detect: true
+  auto_detect: false
   tab_replace: ''
   wrap: true
   hljs: false
